@@ -21,7 +21,8 @@ import com.smarttaskai.app.ui.screens.task.EditTaskScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    billingManager: BillingManager
+    billingManager: BillingManager,
+    onReplayTutorial: () -> Unit = {}
 ) {
     NavHost(
         navController = navController,
@@ -76,7 +77,8 @@ fun NavGraph(
         composable(Screen.Settings.route) {
             SettingsScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPremium = { navController.navigate(Screen.Premium.route) }
+                onNavigateToPremium = { navController.navigate(Screen.Premium.route) },
+                onReplayTutorial = onReplayTutorial
             )
         }
 

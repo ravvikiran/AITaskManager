@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToPremium: () -> Unit,
+    onReplayTutorial: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -125,6 +126,23 @@ fun SettingsScreen(
                         isSelected = uiState.energyPreference == "balanced",
                         onClick = { viewModel.setEnergyPreference("balanced") }
                     )
+                }
+            }
+
+            // Replay Tutorial
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Help",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                androidx.compose.material3.OutlinedButton(
+                    onClick = onReplayTutorial,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Replay Tutorial")
                 }
             }
 
