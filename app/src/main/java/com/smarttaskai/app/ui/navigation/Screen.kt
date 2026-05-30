@@ -53,6 +53,7 @@ sealed class Screen(
     data object CreateHabit : Screen(route = "create_habit", title = "New Habit")
     data object Settings : Screen(route = "settings", title = "Settings")
     data object Premium : Screen(route = "premium", title = "Premium")
+    data object Score : Screen(route = "score", title = "Score")
 
     companion object {
         val bottomNavItems = listOf(Dashboard, Habits, Focus, Analytics)

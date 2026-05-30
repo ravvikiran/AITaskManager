@@ -14,6 +14,7 @@ import com.smarttaskai.app.ui.screens.habits.CreateHabitScreen
 import com.smarttaskai.app.ui.screens.habits.HabitsScreen
 import com.smarttaskai.app.ui.screens.settings.PremiumScreen
 import com.smarttaskai.app.ui.screens.settings.SettingsScreen
+import com.smarttaskai.app.ui.screens.score.ScoreScreen
 import com.smarttaskai.app.ui.screens.task.CreateTaskScreen
 import com.smarttaskai.app.ui.screens.task.EditTaskScreen
 
@@ -30,7 +31,8 @@ fun NavGraph(
             DashboardScreen(
                 onCreateTask = { navController.navigate(Screen.CreateTask.route) },
                 onEditTask = { taskId -> navController.navigate(Screen.EditTask.createRoute(taskId)) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToScore = { navController.navigate(Screen.Score.route) }
             )
         }
 
@@ -82,6 +84,12 @@ fun NavGraph(
             PremiumScreen(
                 onNavigateBack = { navController.popBackStack() },
                 billingManager = billingManager
+            )
+        }
+
+        composable(Screen.Score.route) {
+            ScoreScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }
