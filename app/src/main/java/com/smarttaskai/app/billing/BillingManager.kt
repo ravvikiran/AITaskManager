@@ -62,12 +62,7 @@ class BillingManager @Inject constructor(
 
     private val billingClient: BillingClient = BillingClient.newBuilder(context)
         .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases(
-            com.android.billingclient.api.PendingPurchasesParams.newBuilder()
-                .enableOneTimeProducts()
-                .enablePrepaidPlans()
-                .build()
-        )
+        .enablePendingPurchases()
         .build()
 
     init {
@@ -81,7 +76,7 @@ class BillingManager @Inject constructor(
                     reconnectAttempts = 0
                     _billingState.value = BillingState.Connected
                     // Check existing purchases
-                    scope.launch { queryExistingPurchases() }
+                    queryExistingPurchases()
                 } else {
                     _billingState.value = BillingState.Error("Billing setup failed")
                 }
@@ -163,20 +158,24 @@ class BillingManager @Inject constructor(
         }
     }
 
-    private suspend fun queryExistingPurchases() {
+    private fun queryExistingPurchases() {
         val params = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.SUBS)
             .build()
 
-        val purchasesResult = billingClient.queryPurchasesAsync(params)
-        val activePurchases = purchasesResult.purchasesList.filter {
-            it.purchaseState == Purchase.PurchaseState.PURCHASED
-        }
-
-        if (activePurchases.isNotEmpty()) {
-            userPreferences.setPremium(true)
-        } else {
-            userPreferences.setPremium(false)
+        billingClient.queryPurchasesAsync(params) { billingResult, purchasesList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                val activePurchases = purchasesList.filter {
+                    it.purchaseState == Purchase.PurchaseState.PURCHASED
+                }
+                scope.launch {
+                    if (activePurchases.isNotEmpty()) {
+                        userPreferences.setPremium(true)
+                    } else {
+                        userPreferences.setPremium(false)
+                    }
+                }
+            }
         }
     }
 }

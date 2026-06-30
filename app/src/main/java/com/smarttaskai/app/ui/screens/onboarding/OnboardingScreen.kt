@@ -43,7 +43,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.launch
 
 data class OnboardingPage(
     val icon: ImageVector,
@@ -117,7 +116,7 @@ fun OnboardingScreen(
     ) {
         // Progress bar
         LinearProgressIndicator(
-            progress = { progress },
+            progress = progress,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(4.dp)
