@@ -61,6 +61,9 @@ class HabitRepository(
     }
 
     suspend fun completeHabitToday(habitId: String) {
+        // Prevent double completion on same day
+        if (isHabitCompletedToday(habitId)) return
+
         val now = System.currentTimeMillis()
         habitDao.insertHabitLog(
             HabitLogEntity(

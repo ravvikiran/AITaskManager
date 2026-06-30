@@ -9,7 +9,9 @@ import com.smarttaskai.app.data.local.dao.ProductivityLogDao
 import com.smarttaskai.app.data.local.dao.TaskDao
 import com.smarttaskai.app.data.preferences.UserPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -120,7 +122,7 @@ class ProductivityScoreManager @Inject constructor(
      * Saves the productivity score to a local JSON file.
      * Returns the file path.
      */
-    suspend fun saveScoreToFile(score: ProductivityScore): File {
+    suspend fun saveScoreToFile(score: ProductivityScore): File = withContext(Dispatchers.IO) {
         val scoresDir = File(context.filesDir, SCORES_DIR)
         if (!scoresDir.exists()) scoresDir.mkdirs()
 
@@ -131,17 +133,17 @@ class ProductivityScoreManager @Inject constructor(
         val json = score.toJson()
         file.writeText(json.toString(2))
 
-        return file
+        file
     }
 
     /**
      * Loads all saved score files, returning them sorted by date (newest first).
      */
-    fun loadAllScores(): List<ProductivityScore> {
+    suspend fun loadAllScores(): List<ProductivityScore> = withContext(Dispatchers.IO) {
         val scoresDir = File(context.filesDir, SCORES_DIR)
-        if (!scoresDir.exists()) return emptyList()
+        if (!scoresDir.exists()) return@withContext emptyList()
 
-        return scoresDir.listFiles()
+        scoresDir.listFiles()
             ?.filter { it.name.startsWith(SCORE_FILE_PREFIX) && it.extension == "json" }
             ?.sortedByDescending { it.lastModified() }
             ?.mapNotNull { file ->
@@ -221,7 +223,7 @@ class ProductivityScoreManager @Inject constructor(
     /**
      * Exports all historical scores as a single JSON file for backup/sharing.
      */
-    fun exportAllScores(): File {
+    suspend fun exportAllScores(): File = withContext(Dispatchers.IO) {
         val scores = loadAllScores()
         val jsonArray = JSONArray()
         scores.forEach { jsonArray.put(it.toJson()) }
@@ -240,7 +242,7 @@ class ProductivityScoreManager @Inject constructor(
         val exportFile = File(exportDir, "productivity_history_${getOrCreateUserId().take(8)}.json")
         exportFile.writeText(wrapper.toString(2))
 
-        return exportFile
+        exportFile
     }
 
     private fun buildShareBody(score: ProductivityScore): String {

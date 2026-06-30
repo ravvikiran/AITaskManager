@@ -6,8 +6,6 @@ import com.smarttaskai.app.data.repository.TaskRepository
 import com.smarttaskai.app.domain.model.Priority
 import com.smarttaskai.app.domain.model.SubTask
 import com.smarttaskai.app.domain.model.Task
-import com.smarttaskai.app.domain.model.TaskCategory
-import com.smarttaskai.app.ml.Confidence
 import com.smarttaskai.app.ml.PredictionResult
 import com.smarttaskai.app.ml.ProductivityMLService
 import dagger.hilt.android.lifecycle.HiltViewModel
